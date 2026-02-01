@@ -185,8 +185,10 @@
             try {
                 const resp = await fetch(WEB_APP_URL + '?action=like', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ curiosityId: id, ip: ip })
+                    body: new URLSearchParams({
+                        curiosityId: id,
+                        ip: ip
+                    })
                 });
                 const j = await resp.json();
                 if (j.status === 'ok') {
@@ -222,7 +224,7 @@
                     body: new URLSearchParams({
                         text: text
                     })
-                    });
+                });
                 const j = await resp.json();
                 if (j.status === 'ok') {
                     // recarrega a lista
