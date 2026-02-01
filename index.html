@@ -47,7 +47,7 @@
         }
 
         header {
-            background: var(--green);
+            background: linear-gradient(90deg, var(--black) 0%, rgba(14, 170, 98, 0.12) 100%);
             border-radius: var(--radius);
             padding: 20px 22px;
             display: flex;
@@ -61,6 +61,7 @@
             width: 56px;
             height: 56px;
             border-radius: 10px;
+            background: var(--green);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -200,7 +201,7 @@
         }
 
         .img-logo {
-            width: 100%;
+            width: 128px;
             aspect-ratio: square;
         }
 
@@ -229,9 +230,9 @@
 
 <body>
     <div class="wrap">
+        <img src="./logo.png" class="logo" alt="">
         <header>
             <div class="logo">
-                <img src="./logo.png" class="img-logo" alt="">
             </div>
             <div>
                 <h1>Qual a sua maior curiosidade sobre o funcionamento do computador?</h1>
