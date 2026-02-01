@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Pesquisa: curiosidades sobre o funcionamento do computador</title>
+    <link rel="icon" href="icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -199,6 +200,11 @@
             text-align: center
         }
 
+        .img-logo {
+            width: 100%;
+            aspect-ratio: square;
+        }
+
         @media (max-width:600px) {
             header {
                 padding: 14px
@@ -217,6 +223,7 @@
             .title {
                 font-size: 0.95rem
             }
+
         }
     </style>
 </head>
@@ -224,7 +231,9 @@
 <body>
     <div class="wrap">
         <header>
-            <div class="logo">G</div>
+            <div class="logo">
+                <img src="./logo.png" class="img-logo" alt="">
+            </div>
             <div>
                 <h1>Qual a sua maior curiosidade sobre o funcionamento do computador?</h1>
                 <p class="guide">Você pode marcar uma das curiosidades aqui ou adicionar uma nova.</p>
@@ -248,7 +257,7 @@
 
     <script>
         // ----- CONFIGURE AQUI -----
-        const WEB_APP_URL = 'PASTE_YOUR_WEB_APP_URL_HERE'; // substitua pela URL do seu web app
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwT6paQrn-ut2FgEBZB8Q6v_en4m4Gvv555XMbEj9uxO3OBAYizO1GfthMGoh0hNM4i/exec'; // substitua
         const IP_API = 'https://api.ipify.org?format=json';
 
         // ----- UTIL -----
