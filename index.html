@@ -219,8 +219,9 @@
             try {
                 const resp = await fetch(WEB_APP_URL + '?action=add', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text })
+                    body: new URLSearchParams({
+                        text: text
+                    })
                     });
                 const j = await resp.json();
                 if (j.status === 'ok') {
