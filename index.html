@@ -5,11 +5,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Pesquisa: curiosidades sobre o funcionamento do computador</title>
+    <link rel="icon" href="icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --green: #0eaa62;
             --black: #000000;
+            --bg: #0f1720;
+            /* slightly off-black */
+            --card: #0b0b0b;
             --muted: #9aa3a8;
             --radius: 12px;
         }
@@ -18,12 +22,19 @@
             box-sizing: border-box
         }
 
+        html,
+        body {
+            height: 100%;
+        }
+
         body {
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
             margin: 0;
             min-height: 100%;
             background: linear-gradient(180deg, #071015 0%, #081219 60%);
             color: #e6eef0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
             padding: 24px;
             display: flex;
             align-items: center;
@@ -50,7 +61,6 @@
             width: 56px;
             height: 56px;
             border-radius: 10px;
-            background: var(--green);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -85,6 +95,7 @@
             margin-top: 6px;
         }
 
+        /* list */
         .list {
             display: flex;
             flex-direction: column;
@@ -151,6 +162,7 @@
             text-align: center
         }
 
+        /* add row */
         .add-row {
             display: flex;
             gap: 10px;
@@ -186,6 +198,11 @@
             text-align: center
         }
 
+        .img-logo {
+            width: 128px;
+            aspect-ratio: auto;
+        }
+
         @media (max-width:600px) {
             header {
                 padding: 14px
@@ -204,6 +221,7 @@
             .title {
                 font-size: 0.95rem
             }
+
         }
     </style>
 </head>
@@ -212,7 +230,7 @@
     <div class="wrap">
         <header>
             <div class="logo">
-                <img src="./icon.png" alt="">
+                <img src="./icon.png" class="logo" alt="">
             </div>
             <div>
                 <h1>Qual a sua maior curiosidade sobre o funcionamento do computador?</h1>
@@ -236,19 +254,16 @@
     </div>
 
     <script>
-        // Base URL (same script that served this page)
-        const WEB_APP_BASE = (function () {
-            var u = new URL(window.location.href);
-            u.search = ''; // remove ?page=app
-            return u.href;
-        })();
+        // ----- CONFIGURE AQUI -----
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwT6paQrn-ut2FgEBZB8Q6v_en4m4Gvv555XMbEj9uxO3OBAYizO1GfthMGoh0hNM4i/exec'; // substitua
+        const IP_API = 'https://api.ipify.org?format=json';
 
-        // util
+        // ----- UTIL -----
         function el(q) { return document.querySelector(q) }
         function createItem(cur) {
             const div = document.createElement('div');
             div.className = 'item';
-            div.dataset.id = cur.id || '';
+            div.dataset.id = cur.id;
 
             const left = document.createElement('div'); left.className = 'left';
             const title = document.createElement('div'); title.className = 'title'; title.textContent = cur.text || '';
@@ -271,26 +286,27 @@
             return div;
         }
 
-        // load list
+        // ----- FETCH LIST -----
         async function loadList() {
             try {
-                const res = await fetch(WEB_APP_BASE + '?action=list');
+                const res = await fetch(WEB_APP_URL + '?action=list');
                 const json = await res.json();
                 const list = el('#list');
                 list.innerHTML = '';
                 if (json && Array.isArray(json.curiosities)) {
-                    const items = json.curiosities.slice().sort((a, b) => (Number(b.likes_count || 0) - Number(a.likes_count || 0)) || (new Date(b.created_at) - new Date(a.created_at)));
+                    // order by likes desc then created
+                    const items = json.curiosities.slice().sort((a, b) => (Number(b.likes_count || 0) - Number(a.likes_count || 0)) || new Date(b.created_at) - new Date(a.created_at));
                     items.forEach(c => {
                         const node = createItem(c);
                         list.appendChild(node);
                     });
                     attachLikeEvents();
                 } else {
-                    list.innerHTML = '<div style="color:var(--muted);padding:12px">Nenhuma curiosidade encontrada.</div>';
+                    list.innerHTML = '<div class="meta" style="color:var(--muted);padding:12px">Nenhuma curiosidade encontrada.</div>';
                 }
             } catch (e) {
                 console.error('Erro loadList', e);
-                el('#list').innerHTML = '<div style="color:var(--muted);padding:12px">Erro ao carregar. Tente novamente.</div>';
+                el('#list').innerHTML = '<div class="meta" style="color:var(--muted);padding:12px">Erro ao carregar. Tente novamente.</div>';
             }
         }
 
@@ -305,7 +321,7 @@
         }
 
         async function getIp() {
-            try { const r = await fetch('https://api.ipify.org?format=json'); const j = await r.json(); return j.ip || '' } catch (e) { return '' }
+            try { const r = await fetch(IP_API); const j = await r.json(); return j.ip || '' } catch (e) { return '' }
         }
 
         async function onLikeClick(e) {
@@ -313,7 +329,7 @@
             if (localStorage.getItem('liked_' + id)) { btn.querySelector('span:nth-child(2)').textContent = 'Já marcou'; return; }
             const ip = await getIp();
             try {
-                const resp = await fetch(WEB_APP_BASE + '?action=like', {
+                const resp = await fetch(WEB_APP_URL + '?action=like', {
                     method: 'POST',
                     body: new URLSearchParams({ curiosityId: id, ip: ip })
                 });
@@ -334,18 +350,19 @@
             } catch (err) { console.error('like error', err); btn.querySelector('span:nth-child(2)').textContent = 'Erro'; setTimeout(() => { if (!localStorage.getItem('liked_' + id)) { btn.disabled = false; btn.querySelector('span:nth-child(2)').textContent = 'Curtir'; } }, 1500); }
         }
 
-        // add curiosity
+        // ----- ADD -----
         async function addCuriosity() {
             const input = el('#new-text'); const text = (input.value || '').trim(); if (!text) return;
             const btn = el('#add-btn'); btn.disabled = true; btn.textContent = '+';
             try {
-                const resp = await fetch(WEB_APP_BASE + '?action=add', {
+                const resp = await fetch(WEB_APP_URL + '?action=add', {
                     method: 'POST',
                     body: new URLSearchParams({ text: text })
                 });
                 const j = await resp.json();
                 if (j.status === 'ok') {
-                    input.value = ''; await loadList();
+                    input.value = '';
+                    await loadList();
                 } else {
                     console.warn('add resposta', j);
                     alert('Erro ao adicionar: ' + (j.error || 'Resposta inesperada'));
