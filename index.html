@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Pesquisa: curiosidades sobre o funcionamento do computador</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            margin-bottom: 0.2rem;
+        }
+
+        p.guide {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .like-btn {
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #888;
+            background: white;
+        }
+
+        .like-count {
+            margin-left: 8px;
+            font-weight: bold;
+        }
+
+        .new-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            font-size: 1rem;
+        }
+
+        button.add {
+            padding: 8px 12px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .small {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @media (max-width:600px) {
+
+            th,
+            td {
+                padding: 8px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Qual a sua maior curiosidade sobre o funcionamento do computador?</h1>
+    <p class="guide">Você pode marcar uma das curiosidades aqui ou adicionar uma nova.</p>
+
+    <div id="list-container">
+        <table id="curios-table" aria-live="polite">
+            <thead>
+                <tr>
+                    <th>Curiosidade</th>
+                    <th style="width:160px">Curtir</th>
+                </tr>
+            </thead>
+            <tbody id="curios-body"></tbody>
+        </table>
+    </div>
+
+    <div class="new-row">
+        <input id="new-text" type="text" placeholder="Adicione uma nova curiosidade..." />
+        <button id="add-btn" class="add">+</button>
+    </div>
+    <p class="small">Se o botão '+' não funcionar, verifique se sua conexão está ativa.</p>
+
+    <script>
+        const WEB_APP_URL = 'PASTE_YOUR_WEB_APP_URL_HERE'; // substitua
+        const IP_API = 'https://api.ipify.org?format=json';
+
+        // util
+        function el(q) { return document.querySelector(q); }
+        function tplRow(cur) {
+            return `<tr data-id="${cur.id}">
+    <td>${escapeHtml(cur.text)}</td>
+    <td>
+      <button class="like-btn" data-id="${cur.id}">Curtir</button>
+      <span class="like-count" id="count-${cur.id}">${cur.likes_count || 0}</span>
+    </td>
+  </tr>`;
+        }
+        function escapeHtml(s) { return String(s).replace(/[&<>"']/g, function (m) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]; }); }
+
+        async function loadList() {
+            try {
+                const res = await fetch(WEB_APP_URL + '?action=list');
+                const json = await res.json();
+                if (json && json.curiosities) {
+                    const body = el('#curios-body');
+                    body.innerHTML = json.curiosities.map(c => tplRow(c)).join('');
+                    attachLikeEvents();
+                } else console.error('Resposta inválida', json);
+            } catch (err) {
+                console.error('Erro ao carregar', err);
+            }
+        }
+
+        function attachLikeEvents() {
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.onclick = onLikeClick;
+                // visually disable if localStorage says liked
+                const id = btn.dataset.id;
+                if (localStorage.getItem('liked_' + id)) {
+                    btn.disabled = true;
+                    btn.textContent = 'Já marcou';
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = 'Curtir';
+                }
+            });
+        }
+
+        async function getIp() {
+            // tenta obter IP público
+            try {
+                const r = await fetch(IP_API);
+                const j = await r.json();
+                return j.ip || '';
+            } catch (e) {
+                console.warn('Não foi possível obter IP:', e);
+                return '';
+            }
+        }
+
+        async function onLikeClick(e) {
+            const btn = e.currentTarget;
+            const id = btn.dataset.id;
+            // prevent double-click quickly
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
+            // client-side check
+            if (localStorage.getItem('liked_' + id)) {
+                btn.textContent = 'Já marcou';
+                return;
+            }
+
+            const ip = await getIp();
+            // send to server
+            try {
+                const resp = await fetch(WEB_APP_URL + '?action=like', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ curiosityId: id, ip: ip })
+                });
+                const j = await resp.json();
+                if (j.status === 'ok') {
+                    document.getElementById('count-' + id).textContent = j.new_count;
+                    localStorage.setItem('liked_' + id, '1');
+                    btn.textContent = 'Já marcou';
+                } else if (j.status === 'already_liked') {
+                    btn.textContent = 'Já marcou';
+                    localStorage.setItem('liked_' + id, '1'); // sincroniza
+                } else {
+                    console.warn('Resposta like', j);
+                    btn.textContent = 'Erro';
+                    setTimeout(() => { btn.disabled = false; btn.textContent = 'Curtir'; }, 1500);
+                }
+            } catch (err) {
+                console.error(err);
+                btn.textContent = 'Erro';
+                setTimeout(() => { btn.disabled = false; btn.textContent = 'Curtir'; }, 1500);
+            }
+        }
+
+        async function addCuriosity() {
+            const input = el('#new-text');
+            const text = (input.value || '').trim();
+            if (!text) return;
+            const btn = el('#add-btn');
+            btn.disabled = true;
+            btn.textContent = '+';
+
+            try {
+                const resp = await fetch(WEB_APP_URL + '?action=add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+                const j = await resp.json();
+                if (j.status === 'ok') {
+                    // recarrega a lista
+                    input.value = '';
+                    await loadList();
+                    btn.disabled = false;
+                } else {
+                    console.warn('Resposta add', j);
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('add-btn').addEventListener('click', addCuriosity);
+
+        // inicializa
+        loadList();
+    </script>
+</body>
+
+</html>
