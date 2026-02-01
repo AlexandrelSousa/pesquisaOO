@@ -7,13 +7,11 @@
     <title>Pesquisa: curiosidades sobre o funcionamento do computador</title>
     <link rel="icon" href="icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --green: #0eaa62;
-            --black: #000000;
-            --bg: #0f1720;
-            /* slightly off-black */
-            --card: #0b0b0b;
+            --black: #000;
             --muted: #9aa3a8;
             --radius: 12px;
         }
@@ -22,80 +20,53 @@
             box-sizing: border-box
         }
 
-        html,
         body {
-            height: 100%;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
             margin: 0;
-            min-height: 100%;
-            background: linear-gradient(180deg, #071015 0%, #081219 60%);
+            min-height: 100vh;
+            background: linear-gradient(180deg, #071015, #081219);
             color: #e6eef0;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            padding: 24px;
+            font-family: 'Inter', system-ui, sans-serif;
             display: flex;
-            align-items: center;
             justify-content: center;
+            padding: 24px;
         }
 
         .wrap {
-            width: 100%;
             max-width: 920px;
+            width: 100%
         }
 
         header {
-            background: linear-gradient(90deg, var(--black) 0%, rgba(14, 170, 98, 0.12) 100%);
+            background: linear-gradient(90deg, #000, rgba(14, 170, 98, .12));
             border-radius: var(--radius);
-            padding: 20px 22px;
+            padding: 20px;
             display: flex;
             gap: 16px;
-            align-items: center;
-            box-shadow: 0 6px 20px rgba(2, 6, 8, 0.6);
             margin-bottom: 18px;
         }
 
-        .logo {
+        .logo img {
             width: 56px;
             height: 56px;
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--black);
-            font-weight: 700;
-            font-size: 22px;
         }
 
-        header h1 {
+        h1 {
             margin: 0;
-            font-size: 1.15rem;
-            line-height: 1.1
-        }
-
-        header p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 0.95rem
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: var(--radius);
-            padding: 16px;
-            box-shadow: 0 6px 18px rgba(2, 6, 8, 0.5);
-            margin-bottom: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 1.1rem
         }
 
         .guide {
             color: var(--muted);
-            margin-top: 6px;
+            margin-top: 4px
         }
 
-        /* list */
+        .card {
+            background: rgba(255, 255, 255, .03);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+
         .list {
             display: flex;
             flex-direction: column;
@@ -104,29 +75,21 @@
 
         .item {
             display: flex;
-            align-items: center;
             justify-content: space-between;
             gap: 12px;
             padding: 12px;
             border-radius: 10px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.015));
-            border: 1px solid rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, .02);
         }
 
-        .item .left {
-            flex: 1
+        .title {
+            font-weight: 600
         }
 
-        .item .title {
-            font-size: 0.98rem;
-            font-weight: 600;
-            color: #eaf6f0
-        }
-
-        .item .meta {
-            font-size: 0.86rem;
+        .meta {
+            font-size: .85rem;
             color: var(--muted);
-            margin-top: 6px
+            margin-top: 4px
         }
 
         .controls {
@@ -136,247 +99,192 @@
         }
 
         .like-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, .1);
+            color: var(--green);
             padding: 8px 12px;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            background: transparent;
-            color: var(--green);
             cursor: pointer;
             font-weight: 600;
-            min-width: 90px;
-            justify-content: center
         }
 
         .like-btn[disabled] {
-            opacity: 0.5;
-            cursor: default
+            opacity: .5;
+            cursor: default;
         }
 
         .like-count {
-            font-weight: 700;
-            color: #dff9ec;
-            min-width: 32px;
-            text-align: center
+            font-weight: 700
         }
 
-        /* add row */
         .add-row {
             display: flex;
             gap: 10px;
-            margin-top: 12px
+            margin-top: 14px;
         }
 
         .input {
             flex: 1;
-            background: transparent;
-            border: 1px dashed rgba(255, 255, 255, 0.04);
             padding: 12px;
             border-radius: 10px;
+            background: transparent;
+            border: 1px dashed rgba(255, 255, 255, .1);
             color: inherit;
-            font-size: 1rem
         }
 
         .btn-add {
             background: var(--green);
-            color: var(--black);
+            color: #000;
             border: none;
-            padding: 0 14px;
             border-radius: 10px;
             font-weight: 700;
+            padding: 0 16px;
             cursor: pointer;
-            min-width: 48px;
-            height: 44px
         }
 
         footer {
-            margin-top: 10px;
+            margin-top: 12px;
+            text-align: center;
+            font-size: .85rem;
             color: var(--muted);
-            font-size: 0.85rem;
-            text-align: center
-        }
-
-        .img-logo {
-            width: 128px;
-            aspect-ratio: auto;
-        }
-
-        @media (max-width:600px) {
-            header {
-                padding: 14px
-            }
-
-            .logo {
-                width: 48px;
-                height: 48px;
-                font-size: 20px
-            }
-
-            .item {
-                padding: 10px
-            }
-
-            .title {
-                font-size: 0.95rem
-            }
-
         }
     </style>
 </head>
 
 <body>
     <div class="wrap">
+
         <header>
             <div class="logo">
-                <img src="./icon.png" class="logo" alt="">
+                <img src="icon.png" alt="Logo">
             </div>
             <div>
                 <h1>Qual dessas curiosidades sobre o funcionamento do computador você possui?</h1>
-                <p class="guide">Você também pode adicionar uma nova curiosidade a lista.</p>
+                <p class="guide">Você também pode adicionar uma nova curiosidade à lista.</p>
             </div>
         </header>
 
-        <main class="card" id="main-card">
-            <div id="list" class="list" aria-live="polite"></div>
+        <main class="card">
+            <div id="list" class="list"></div>
 
             <div class="add-row">
-                <input id="new-text" class="input" type="text" placeholder="Adicione uma nova curiosidade..."
-                    aria-label="Nova curiosidade" />
-                <button id="add-btn" class="btn-add" title="Adicionar">+</button>
+                <input id="new-text" class="input" placeholder="Adicione uma nova curiosidade..." />
+                <button id="add-btn" class="btn-add">+</button>
             </div>
 
             <footer>
-                <small>Pesquisa para desenvolvimento do jogo — cores do projeto: verde e preto.</small>
+                Pesquisa para desenvolvimento de jogo educativo — sem coleta de dados pessoais.
             </footer>
         </main>
+
     </div>
 
     <script>
-        // ----- CONFIGURE AQUI -----
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwT6paQrn-ut2FgEBZB8Q6v_en4m4Gvv555XMbEj9uxO3OBAYizO1GfthMGoh0hNM4i/exec'; // substitua
-        const IP_API = 'https://api.ipify.org?format=json';
+        // ========= CONFIG =========
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwT6paQrn-ut2FgEBZB8Q6v_en4m4Gvv555XMbEj9uxO3OBAYizO1GfthMGoh0hNM4i/exec';
 
-        // ----- UTIL -----
-        function el(q) { return document.querySelector(q) }
+        // ========= UUID ANÔNIMO =========
+        function getUserUUID() {
+            let uuid = localStorage.getItem('user_uuid');
+            if (!uuid) {
+                uuid = crypto.randomUUID();
+                localStorage.setItem('user_uuid', uuid);
+            }
+            return uuid;
+        }
+        const USER_UUID = getUserUUID();
+
+        const el = q => document.querySelector(q);
+
         function createItem(cur) {
             const div = document.createElement('div');
             div.className = 'item';
-            div.dataset.id = cur.id;
 
-            const left = document.createElement('div'); left.className = 'left';
-            const title = document.createElement('div'); title.className = 'title'; title.textContent = cur.text || '';
-            const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = cur.created_at ? new Date(cur.created_at).toLocaleString() : '';
-            left.appendChild(title); left.appendChild(meta);
-
-            const controls = document.createElement('div'); controls.className = 'controls';
-
-            const btn = document.createElement('button'); btn.className = 'like-btn'; btn.dataset.id = cur.id; btn.setAttribute('aria-label', 'Curtir');
-            const spanIcon = document.createElement('span'); spanIcon.textContent = '❤'; spanIcon.style.fontSize = '14px';
-            const spanText = document.createElement('span'); spanText.textContent = 'Curtir';
-            btn.appendChild(spanIcon); btn.appendChild(spanText);
-
-            const count = document.createElement('div'); count.className = 'like-count'; count.id = 'count-' + cur.id; count.textContent = (cur.likes_count || 0);
-
-            controls.appendChild(btn); controls.appendChild(count);
-
-            div.appendChild(left); div.appendChild(controls);
-
+            div.innerHTML = `
+            <div>
+                <div class="title">${cur.text}</div>
+                <div class="meta">${cur.created_at ? new Date(cur.created_at).toLocaleString() : ''}</div>
+            </div>
+            <div class="controls">
+                <button class="like-btn" data-id="${cur.id}">❤ Curtir</button>
+                <div class="like-count" id="count-${cur.id}">${cur.likes_count || 0}</div>
+            </div>
+        `;
             return div;
         }
 
-        // ----- FETCH LIST -----
         async function loadList() {
-            try {
-                const res = await fetch(WEB_APP_URL + '?action=list');
-                const json = await res.json();
-                const list = el('#list');
-                list.innerHTML = '';
-                if (json && Array.isArray(json.curiosities)) {
-                    // order by likes desc then created
-                    const items = json.curiosities.slice().sort((a, b) => (Number(b.likes_count || 0) - Number(a.likes_count || 0)) || new Date(b.created_at) - new Date(a.created_at));
-                    items.forEach(c => {
-                        const node = createItem(c);
-                        list.appendChild(node);
-                    });
-                    attachLikeEvents();
-                } else {
-                    list.innerHTML = '<div class="meta" style="color:var(--muted);padding:12px">Nenhuma curiosidade encontrada.</div>';
-                }
-            } catch (e) {
-                console.error('Erro loadList', e);
-                el('#list').innerHTML = '<div class="meta" style="color:var(--muted);padding:12px">Erro ao carregar. Tente novamente.</div>';
-            }
+            const res = await fetch(WEB_APP_URL + '?action=list');
+            const json = await res.json();
+            const list = el('#list');
+            list.innerHTML = '';
+
+            json.curiosities
+                .sort((a, b) => (b.likes_count || 0) - (a.likes_count || 0))
+                .forEach(c => list.appendChild(createItem(c)));
+
+            attachLikeEvents();
         }
 
         function attachLikeEvents() {
             document.querySelectorAll('.like-btn').forEach(btn => {
                 const id = btn.dataset.id;
-                btn.onclick = onLikeClick;
                 if (localStorage.getItem('liked_' + id)) {
-                    btn.disabled = true; btn.querySelector('span:nth-child(2)').textContent = 'Já marcou';
-                } else { btn.disabled = false; btn.querySelector('span:nth-child(2)').textContent = 'Curtir'; }
+                    btn.disabled = true;
+                    btn.textContent = '✔ Já marcou';
+                }
+                btn.onclick = () => likeCuriosity(id, btn);
             });
         }
 
-        async function getIp() {
-            try { const r = await fetch(IP_API); const j = await r.json(); return j.ip || '' } catch (e) { return '' }
+        async function likeCuriosity(id, btn) {
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
+            const resp = await fetch(WEB_APP_URL + '?action=like', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    curiosityId: id,
+                    userId: USER_UUID
+                })
+            });
+
+            const j = await resp.json();
+
+            if (j.status === 'ok') {
+                el('#count-' + id).textContent = j.new_count;
+                localStorage.setItem('liked_' + id, '1');
+                btn.textContent = '✔ Já marcou';
+            } else {
+                btn.textContent = 'Erro';
+            }
         }
 
-        async function onLikeClick(e) {
-            const btn = e.currentTarget; const id = btn.dataset.id; btn.disabled = true; btn.querySelector('span:nth-child(2)').textContent = 'Enviando...';
-            if (localStorage.getItem('liked_' + id)) { btn.querySelector('span:nth-child(2)').textContent = 'Já marcou'; return; }
-            const ip = await getIp();
-            try {
-                const resp = await fetch(WEB_APP_URL + '?action=like', {
-                    method: 'POST',
-                    body: new URLSearchParams({ curiosityId: id, ip: ip })
-                });
-                const j = await resp.json();
-                if (j.status === 'ok') {
-                    const count = document.getElementById('count-' + id);
-                    if (count) count.textContent = j.new_count;
-                    localStorage.setItem('liked_' + id, '1');
-                    btn.querySelector('span:nth-child(2)').textContent = 'Já marcou';
-                } else if (j.status === 'already_liked') {
-                    localStorage.setItem('liked_' + id, '1');
-                    btn.querySelector('span:nth-child(2)').textContent = 'Já marcou';
-                } else {
-                    console.warn('like resposta', j);
-                    btn.querySelector('span:nth-child(2)').textContent = 'Erro';
-                    setTimeout(() => { if (!localStorage.getItem('liked_' + id)) { btn.disabled = false; btn.querySelector('span:nth-child(2)').textContent = 'Curtir'; } }, 1500);
-                }
-            } catch (err) { console.error('like error', err); btn.querySelector('span:nth-child(2)').textContent = 'Erro'; setTimeout(() => { if (!localStorage.getItem('liked_' + id)) { btn.disabled = false; btn.querySelector('span:nth-child(2)').textContent = 'Curtir'; } }, 1500); }
-        }
-
-        // ----- ADD -----
         async function addCuriosity() {
-            const input = el('#new-text'); const text = (input.value || '').trim(); if (!text) return;
-            const btn = el('#add-btn'); btn.disabled = true; btn.textContent = '+';
-            try {
-                const resp = await fetch(WEB_APP_URL + '?action=add', {
-                    method: 'POST',
-                    body: new URLSearchParams({ text: text })
-                });
-                const j = await resp.json();
-                if (j.status === 'ok') {
-                    input.value = '';
-                    await loadList();
-                } else {
-                    console.warn('add resposta', j);
-                    alert('Erro ao adicionar: ' + (j.error || 'Resposta inesperada'));
-                }
-            } catch (e) { console.error('add error', e); alert('Erro ao enviar.'); }
-            btn.disabled = false; btn.textContent = '+';
+            const input = el('#new-text');
+            const text = input.value.trim();
+            if (!text) return;
+
+            await fetch(WEB_APP_URL + '?action=add', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    text,
+                    userId: USER_UUID
+                })
+            });
+
+            input.value = '';
+            loadList();
         }
 
-        el('#add-btn').addEventListener('click', addCuriosity);
-        el('#new-text').addEventListener('keypress', function (e) { if (e.key === 'Enter') addCuriosity(); });
+        el('#add-btn').onclick = addCuriosity;
+        el('#new-text').addEventListener('keydown', e => {
+            if (e.key === 'Enter') addCuriosity();
+        });
 
-        // init
         loadList();
     </script>
+
 </body>
 
 </html>
