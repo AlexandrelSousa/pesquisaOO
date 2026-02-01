@@ -220,8 +220,8 @@
                 const resp = await fetch(WEB_APP_URL + '?action=add', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: text })
-                });
+                    body: JSON.stringify({ text })
+                    });
                 const j = await resp.json();
                 if (j.status === 'ok') {
                     // recarrega a lista
